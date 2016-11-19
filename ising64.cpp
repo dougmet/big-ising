@@ -10,8 +10,7 @@ using namespace std;
 #include "MersenneTwister.h"
 
 #ifdef PNG_DUMP
-#include "pngwriter.h"
-#include "pngwriter.cc"
+#include <pngwriter.h>
 #endif
 
 #define WIDTH 2048 // Giant 131072 // Large 32768 // Med 4096 // Sm 1024

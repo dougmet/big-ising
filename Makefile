@@ -1,7 +1,7 @@
 
 CC=g++
-CFLAGS=-c -Wall
-LDFLAGS=
+CFLAGS=-c -Wall -DPNG_DUMP -I/opt/X11/include -I/opt/X11/include/freetype2 -I/Users/douglas/Cprogs/build/include
+LDFLAGS=-llibpng
 SOURCES=ising64.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXE=ising

@@ -7,8 +7,7 @@
 #include <math.h>  
 #include <string> 
 using namespace std; 
-#include "/home/da246/MersenneTwister.h"
-//#include "/Users/da246/Cprogs/MersenneTwister.h"
+#include "MersenneTwister.h"
 
 #ifdef PNG_DUMP
 #include "/home/da246/pngwriter.h"

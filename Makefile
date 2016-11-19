@@ -1,7 +1,7 @@
 
 CC=g++
-CFLAGS=-c -Wall -DPNG_DUMP -I/opt/X11/include -I/opt/X11/include/freetype2 -I/Users/douglas/Cprogs/build/include
-LDFLAGS=-L/opt/X11/lib -llibpng
+CFLAGS=-c -Wall -DPNG_DUMP -I/anaconda/include -I/anaconda/include/freetype2 -I/Users/douglas/Cprogs/build/include
+LDFLAGS=-L/anaconda/lib -L/Users/douglas/Cprogs/build/lib -llibpng -llibpngwriter
 SOURCES=ising64.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXE=ising

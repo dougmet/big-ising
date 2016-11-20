@@ -7,11 +7,9 @@
 #include <math.h>  
 #include <string> 
 using namespace std; 
-#include "/home/da246/MersenneTwister.h"
+#include "MersenneTwister.h"
 
-#include "/home/da246/pngwriter.h"
-#include "/home/da246/pngwriter.cc"
-//#include <pngwriter.h>
+#include "lodepng.h"
 
 #define N 17179869184 // Giant 17179869184 Large 1073741824 // Med 16777216 // Sm 1048576
 #define WIDTH 131072 // Giant 131072 Large 32768 // Med 4096 // Sm 1024

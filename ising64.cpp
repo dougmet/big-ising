@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <fstream> 
+#include <vector>
 #include <stdlib.h>
 #include <sstream>      
 #include <math.h>  
@@ -10,7 +11,7 @@ using namespace std;
 #include "MersenneTwister.h"
 
 #ifdef PNG_DUMP
-#include <pngwriter.h>
+#include "lodepng.h"
 #endif
 
 #define WIDTH 2048 // Giant 131072 // Large 32768 // Med 4096 // Sm 1024
@@ -544,15 +545,14 @@ void ising_class::draw_xy_L(long x, long y, long Wrn, double Lfac, int findex)
 	Nrn = Wrn * Wrn;
 	Nblock = block_length * block_length;
 	
-	
 	cout << "Wrn=" << Wrn << ", block_length=" << block_length << endl;
 	
 	if ((x + Wrn*block_length <= WIDTH) && (y + Wrn*block_length <= WIDTH))
 	{
 		bigcorner = x + y*WIDTH;
+        std::vector<unsigned char> pngbuf(4*Nrn);
 		
 		sprintf(filename, "swolff%4.4d.png", findex);
-		pngwriter png(Wrn,Wrn,0.0,filename);
 		
 		cout << filename << endl;
 		for (col=0;col<Wrn;col++)
@@ -574,12 +574,20 @@ void ising_class::draw_xy_L(long x, long y, long Wrn, double Lfac, int findex)
 				// av_spin = -pow(av_spin,2)*(2*av_spin-3);									// cubic (dy/dx=0 at x=0,1)
 				av_spin = tanh(steep * (av_spin - 0.5)) / tanh(0.5 * steep) / 2.0 + 0.5;	// tanh
 				
-				png.plot(col, row, av_spin, av_spin, av_spin);
+                pngbuf[4*(col + Wrn*row) + 0] = int(255*av_spin);
+                pngbuf[4*(col + Wrn*row) + 1] = int(255*av_spin);
+                pngbuf[4*(col + Wrn*row) + 2] = int(255*av_spin);
+                pngbuf[4*(col + Wrn*row) + 3] = 255;
+                
 				
 			}
 		}
 		
-		png.close();
+        //Encode the image
+        unsigned error = lodepng::encode(filename, pngbuf, Wrn, Wrn);
+        
+        //if there's an error, display it
+        if(error) std::cout << "encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
 	}
 	else
 	{

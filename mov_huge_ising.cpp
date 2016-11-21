@@ -8,17 +8,11 @@
 #include <string>
 #include <float.h>
 
-#ifdef __APPLE__
- #include "/Users/da246/Cprogs/pngwriter.h"
- #include "/Users/da246/Cprogs/pngwriter.cc"
-#else
- #include "/home/da246/pngwriter.h"
- #include "/home/da246/pngwriter.cc"
-#endif
+#include "lodepng.h"
 
 
 using namespace std; 
-#include "../MersenneTwister.h"
+#include "MersenneTwister.h"
 
 
 
@@ -228,12 +222,10 @@ void box_class::start_job()
 	
 	cout << "Resolution: " << resolution << ". Square Length = " << radius << " pixels. Unrounded=" << op << ", Lwins=" << Lwin << endl;
 	
-	pngwriter png(resolution,resolution,1.0,"squares.png");
-	
-//	png.filledcircle(resolution/2,resolution/2,resolution,0.8,0.9,1.0);
-//	png.flood_fill(resolution/2,resolution/2,0.8,0.9,1.0);
-	
-	
+	//pngwriter png(resolution,resolution,1.0,"squares.png");
+	std::vector<unsigned char> pngbuf(4*resolution*resolution);
+	for (ci=0;ci<4*resolution*resolution;ci++) pngbuf[ci]=255; // whiteout
+
 	for (y=c0y;y<c0y+Lcell;y++)
 	{
 		for (x=c0x;x<c0x+Lcell;x++)
@@ -253,9 +245,28 @@ void box_class::start_job()
 				row = lround(yp*resolution);
 				
 				if (radius==0)
-					png.plot(col,row,0.0,0.0,0.0);
-				else
-					png.filledsquare(col, row, col+radius-1, row+radius-1, 0.0,0.0,0.0);
+				{
+					//png.plot(col,row,0.0,0.0,0.0);
+					pngbuf[4*(col + resolution*row) + 0] = 0;
+					pngbuf[4*(col + resolution*row) + 1] = 0;
+					pngbuf[4*(col + resolution*row) + 2] = 0;
+					pngbuf[4*(col + resolution*row) + 3] = 255;
+				}
+				else 
+				{
+					// png.filledsquare(col, row, col+radius-1, row+radius-1, 0.0,0.0,0.0);
+					for (int cci = col; cci<col+radius; cci++) 
+					{
+						for(int rri = row; rri < row + radius; rri++)
+						{
+							pngbuf[4*(cci + resolution*rri) + 0] = 0;
+							pngbuf[4*(cci + resolution*rri) + 1] = 0;
+							pngbuf[4*(cci + resolution*rri) + 2] = 0;
+							pngbuf[4*(cci + resolution*rri) + 3] = 255;
+						}
+                    }
+				}
+					
 			
 				current = particle[current].next;
 			}
@@ -263,7 +274,11 @@ void box_class::start_job()
 		}
 	}
 	
-	png.close();
+	//Encode the image
+     unsigned error = lodepng::encode("squares.png", pngbuf, resolution, resolution);
+        
+     //if there's an error, display it
+     if(error) std::cout << "encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
 	
 	
 }
@@ -427,7 +442,7 @@ void ising_class::draw_xy_L(long x, long y, long Wrn, double Lfac, int findex)
 		bigcorner = x + y*WIDTH;
 		
 		sprintf(filename, "frame%4.4d.png", findex);
-		pngwriter png(Wrn,Wrn,0.0,filename);
+		std::vector<unsigned char> pngbuf(4*Nrn);
 		
 		cout << filename << endl;
 		for (col=0;col<Wrn;col++)
@@ -449,12 +464,19 @@ void ising_class::draw_xy_L(long x, long y, long Wrn, double Lfac, int findex)
 				// av_spin = -pow(av_spin,2)*(2*av_spin-3);									// cubic (dy/dx=0 at x=0,1)
 				av_spin = 0.5 - tanh(steep * (av_spin - 0.5)) / tanh(0.5 * steep) / 2.0;	// tanh
 				
-				png.plot(col, row, av_spin, av_spin, av_spin);
+				pngbuf[4*(col + Wrn*row) + 0] = lround(255*av_spin);
+                pngbuf[4*(col + Wrn*row) + 1] = lround(255*av_spin);
+                pngbuf[4*(col + Wrn*row) + 2] = lround(255*av_spin);
+                pngbuf[4*(col + Wrn*row) + 3] = 255;
 				
 			}
 		}
 		
-		png.close();
+		//Encode the image
+        unsigned error = lodepng::encode(filename, pngbuf, Wrn, Wrn);
+        
+        //if there's an error, display it
+        if(error) std::cout << "encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
 	}
 	else
 	{

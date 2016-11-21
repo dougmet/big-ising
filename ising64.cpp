@@ -574,9 +574,9 @@ void ising_class::draw_xy_L(long x, long y, long Wrn, double Lfac, int findex)
 				// av_spin = -pow(av_spin,2)*(2*av_spin-3);									// cubic (dy/dx=0 at x=0,1)
 				av_spin = tanh(steep * (av_spin - 0.5)) / tanh(0.5 * steep) / 2.0 + 0.5;	// tanh
 				
-                pngbuf[4*(col + Wrn*row) + 0] = int(255*av_spin);
-                pngbuf[4*(col + Wrn*row) + 1] = int(255*av_spin);
-                pngbuf[4*(col + Wrn*row) + 2] = int(255*av_spin);
+                pngbuf[4*(col + Wrn*row) + 0] = lround(255*av_spin);
+                pngbuf[4*(col + Wrn*row) + 1] = lround(255*av_spin);
+                pngbuf[4*(col + Wrn*row) + 2] = lround(255*av_spin);
                 pngbuf[4*(col + Wrn*row) + 3] = 255;
                 
 				

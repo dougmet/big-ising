@@ -11,6 +11,9 @@ ising:
 
 isingpng:
 	$(CC) $(SOURCES) ising-png.cpp $(CFLAGS) $(LDFLAGS) -o isingpng
-	
+
+isingmov:
+	$(CC) $(SOURCES) mov_huge_ising.cpp $(CFLAGS) $(LDFLAGS) -o isingmov
+
 clean:
 	rm ising isingpng

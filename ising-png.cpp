@@ -11,10 +11,10 @@ using namespace std;
 
 #include "lodepng.h"
 
-#define N 17179869184 // Giant 17179869184 Large 1073741824 // Med 16777216 // Sm 1048576
-#define WIDTH 131072 // Giant 131072 Large 32768 // Med 4096 // Sm 1024
+#define WIDTH 2048 // Giant 131072 // Large 32768 // Med 4096 // Sm 1024
+#define N (WIDTH*WIDTH) // Giant 17179869184 // Large 1073741824 // Med 16777216 // Sm 1048576
 // For MAX_CLUSTER YOU MUST NOT PUT SOMETHING LIKE 64*WIDTH, PUT THE NUMBER
-#define MAX_CLUSTER 2097152 // Large 2097152 // Med 262144 // Sm 65536
+#define MAX_CLUSTER 65536 // Large 2097152 // Med 262144 // Sm 65536
 #define T 2.2694
 // #define T 2.269158
 
@@ -172,18 +172,24 @@ void ising_class::draw_whole_lattice()
 	
 	filename.str("");
 	filename << "ising-whole.png";	
-	pngwriter png(WIDTH,WIDTH,0.0,filename.str().c_str());
+    std::vector<unsigned char> pngbuf(4*N);
 
 	for (col=0;col<WIDTH;col++)
 	{
 		for (row=0;row<WIDTH;row++)
 		{
 			spin = (double) (getspin(row*WIDTH + col) + 1e-10);
-			png.plot(col, row, spin, spin, spin);
+			pngbuf[4*(col + WIDTH*row) + 0] = 255*spin;
+			pngbuf[4*(col + WIDTH*row) + 1] = 255*spin;
+			pngbuf[4*(col + WIDTH*row) + 2] = 255*spin;
+			pngbuf[4*(col + WIDTH*row) + 3] = 255;
 		}
 	}
 		
-	png.close();
+	unsigned error = lodepng::encode(filename.str().c_str(), pngbuf, WIDTH, WIDTH);
+        
+    //if there's an error, display it
+    if(error) std::cout << "encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
 	
 }
 
@@ -211,7 +217,8 @@ void ising_class::draw_xy(long x, long y, long Wrn, long block_length)
 		if (block_length < 100) filename << "0";
 		if (block_length < 1000) filename << "0";
 		filename << block_length << ".png";	
-		pngwriter png(Wrn,Wrn,0.0,filename.str().c_str());
+		
+		std::vector<unsigned char> pngbuf(4*Nrn);
 		
 		cout << filename.str().c_str() << endl;
 		for (col=0;col<Wrn;col++)
@@ -233,12 +240,18 @@ void ising_class::draw_xy(long x, long y, long Wrn, long block_length)
 				// av_spin = -pow(av_spin,2)*(2*av_spin-3);									// cubic (dy/dx=0 at x=0,1)
 				av_spin = tanh(steep * (av_spin - 0.5)) / tanh(0.5 * steep) / 2.0 + 0.5;	// tanh
 				
-				png.plot(col, row, av_spin, av_spin, av_spin);
-				
+                pngbuf[4*(col + Wrn*row) + 0] = int(255*av_spin);
+                pngbuf[4*(col + Wrn*row) + 1] = int(255*av_spin);
+                pngbuf[4*(col + Wrn*row) + 2] = int(255*av_spin);
+                pngbuf[4*(col + Wrn*row) + 3] = 255;				
 			}
 		}
 		
-		png.close();
+		//Encode the image
+        unsigned error = lodepng::encode(filename.str().c_str(), pngbuf, Wrn, Wrn);
+        
+        //if there's an error, display it
+        if(error) std::cout << "encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
 	}
 	else
 	{
@@ -267,8 +280,10 @@ void ising_class::draw_xy_L(long x, long y, long Wrn, double Lfac, int findex)
 	
 	// Rounding down
 	block_length = (int) (WIDTH * Lfac / Wrn);
+
 	// We might want to round Wrn up
 	Wrn = lround(WIDTH * Lfac / block_length);
+	cout << Wrn <<endl;
 	while ((x + Wrn*block_length > WIDTH) || (y + Wrn*block_length > WIDTH))
 		Wrn --;
 	
@@ -284,7 +299,7 @@ void ising_class::draw_xy_L(long x, long y, long Wrn, double Lfac, int findex)
 		bigcorner = x + y*WIDTH;
 		
 		sprintf(filename, "frame%4.4d.png", findex);
-		pngwriter png(Wrn,Wrn,0.0,filename);
+		std::vector<unsigned char> pngbuf(4*Nrn);
 		
 		cout << filename << endl;
 		for (col=0;col<Wrn;col++)
@@ -301,17 +316,22 @@ void ising_class::draw_xy_L(long x, long y, long Wrn, double Lfac, int findex)
 						av_spin += getspin(corner + WIDTH*jb + kb);
 				
 				av_spin /= Nblock;
-				
 			
 				// av_spin = -pow(av_spin,2)*(2*av_spin-3);									// cubic (dy/dx=0 at x=0,1)
 				av_spin = tanh(steep * (av_spin - 0.5)) / tanh(0.5 * steep) / 2.0 + 0.5;	// tanh
 				
-				png.plot(col, row, av_spin, av_spin, av_spin);
-				
+                pngbuf[4*(col + Wrn*row) + 0] = int(255*av_spin);
+                pngbuf[4*(col + Wrn*row) + 1] = int(255*av_spin);
+                pngbuf[4*(col + Wrn*row) + 2] = int(255*av_spin);
+                pngbuf[4*(col + Wrn*row) + 3] = 255;				
 			}
 		}
 		
-		png.close();
+		//Encode the image
+        unsigned error = lodepng::encode(filename, pngbuf, Wrn, Wrn);
+        
+        //if there's an error, display it
+        if(error) std::cout << "encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
 	}
 	else
 	{
@@ -351,7 +371,7 @@ void ising_class::draw_lattice(long Wframes, long block_length)
 		if (block_length < 100) filename << "0";
 		if (block_length < 1000) filename << "0";
 		filename << block_length << ".png";	
-		pngwriter png(Wrn,Wrn,0.0,filename.str().c_str());
+		std::vector<unsigned char> pngbuf(4*Nrn);
 
 cout << filename.str().c_str() << endl;
 		for (col=0;col<Wrn;col++)
@@ -372,14 +392,21 @@ cout << filename.str().c_str() << endl;
 				// Apply some contrast
 				steep=6.0;
 				// av_spin = -pow(av_spin,2)*(2*av_spin-3);									// cubic (dy/dx=0 at x=0,1)
-				 av_spin = tanh(steep * (av_spin - 0.5)) / tanh(0.5 * steep) / 2.0 + 0.5;	// tanh
+				av_spin = tanh(steep * (av_spin - 0.5)) / tanh(0.5 * steep) / 2.0 + 0.5;	// tanh
 
-				png.plot(col, row, av_spin, av_spin, av_spin);
+				pngbuf[4*(col + Wrn*row) + 0] = int(255*av_spin);
+                pngbuf[4*(col + Wrn*row) + 1] = int(255*av_spin);
+                pngbuf[4*(col + Wrn*row) + 2] = int(255*av_spin);
+                pngbuf[4*(col + Wrn*row) + 3] = 255;
 	
 		    }
 		}
 		
-		png.close();
+		//Encode the image
+        unsigned error = lodepng::encode(filename.str().c_str(), pngbuf, Wrn, Wrn);
+        
+        //if there's an error, display it
+        if(error) std::cout << "encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
 	   }
 	}
 }

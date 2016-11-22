@@ -4,7 +4,7 @@ CFLAGS=-Wall -DPNG_DUMP
 LDFLAGS=
 SOURCES=lodepng.cpp
 
-all: ising isingpng
+all: ising isingpng isingmov
 
 ising:
 	$(CC) $(SOURCES) ising64.cpp $(CFLAGS) $(LDFLAGS) -o ising
@@ -16,4 +16,4 @@ isingmov:
 	$(CC) $(SOURCES) mov_huge_ising.cpp $(CFLAGS) $(LDFLAGS) -o isingmov
 
 clean:
-	rm ising isingpng
+	rm ising isingpng isingmov

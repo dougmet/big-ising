@@ -1,5 +1,8 @@
 ising
 isingpng
 isingmov
+ising.exe
+isingpng.exe
+isingmov.exe
 *.o
 

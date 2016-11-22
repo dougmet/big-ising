@@ -12,3 +12,7 @@ It is mostly a standard Wolff algorithm, but it does two clever things:
 ## Building
 
 There are no big dependencies for this code. It's been tested on Mac with clang, Linux with gcc and Windows using MingGW-W64. You can get the Windows tool chain from [https://mingw-w64.org/](https://mingw-w64.org/). If you have the [Rtools](https://cran.r-project.org/bin/windows/Rtools/) tools set then it comes bundled with that. I used rtools34.exe.
+
+## License
+
+MIT © Douglas Ashton, Lode Vandevenne

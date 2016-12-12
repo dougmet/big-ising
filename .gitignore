@@ -4,5 +4,7 @@ isingmov
 ising.exe
 isingpng.exe
 isingmov.exe
+lattice.pos
+data
 *.o
 

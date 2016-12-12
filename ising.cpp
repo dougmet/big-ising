@@ -22,125 +22,7 @@
 
 // Ising model designed to work around Tc
 
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <stdlib.h>
-#include <sstream>
-#include <math.h>
-#include <string>
-#include <stdint.h>
-using namespace std;
-#include "MersenneTwister.h"
-
-#ifdef PNG_DUMP
-#include "lodepng.h"
-#endif
-
-#define WIDTH 2048 // Giant 131072 // Large 32768 // Med 4096 // Sm 1024
-#define N (WIDTH*WIDTH) // Giant 17179869184 // Large 1073741824 // Med 16777216 // Sm 1048576
-#define MAX_CLUSTER (64*WIDTH) // Giant 8388608 // Large 2097152 // Med 262144 // Sm 65536
-//#define T 2.28
- #define T 2.269158
-
-uint64_t tint;
-
-
-class ising_class
-{
-	public:
-
-	unsigned char *spin;
-	unsigned char *incluster;
-	uint64_t *cluster;
-	int64_t Nc;
-	int64_t mag;
-	double cprob;
-	MTRand mt;
-
-	ising_class();
-	inline bool getspin(int64_t index);
-	inline bool getincluster(int64_t index);
-	inline void flipspin(int64_t index);
-	inline void flipincluster(int64_t index);
-
-	void wolff(double sweeps);
-	double energy();
-	int64_t magnetisation();
-/*	void draw_lattice(long Wframes, long block_length);
-	void draw_whole_lattice(); */
-	void clusters();
-	void save_config(const char * filename);
-	void load_config(const char * filename);
-
-#ifdef PNG_DUMP
-	void draw_xy_L(long x, long y, long Wrn, double Lfac, int findex);
-#endif
-
-};
-
-
-
-int main(int argc, char *argv[])
-{
-	int i, iframe=0;
-	bool x;
-	ising_class ising;
-	ofstream clearfile, datafile;
-
-
-	cout << "Everyone's alive" << endl;
-
-	clearfile.open("data");
-	clearfile << "N " << N << " T " << T  << endl;
-	clearfile.close();
-
-	//ising.mt.seed(10);
-//	ising.wolff(25);
-
-	cout << "Loading..." << flush;
-	ising.load_config("lattice.pos");
-	cout << " Done." << endl;
-
-	datafile.open("data",fstream::app | fstream::ate);
-	i=0;
-	while (i>-1)// || fabs(ising.mag)/((double) N) > 0.1)
-	{
-	cout << i << endl;
-		ising.wolff(0.1);
-#ifdef PNG_DUMP
-		ising.draw_xy_L(0,0, 720, 1.0, iframe++);
-#endif
-		datafile << ising.mag << " " << ising.energy() << endl;
-
-		if ((fabs(ising.mag)/((double) N) < 0.03) && (i>50))
-		{
-			ising.save_config("lattice.pos");
-			cout << "Close to zero magnetisation. Stopping." << endl;
-			exit(0);
-		}
-
-		if (i%20==0)
-			ising.save_config("lattice.pos");
-
-		i++;
-	}
-	datafile.close();
-
-
-
-
-//	ising.load_config("lattice1.pos");
-//	ising.clusters();
-
-/*	ising.draw_lattice(4, 2);
-	ising.draw_lattice(1, 4);
-	ising.draw_whole_lattice();
-*/
-
-
-	return 0;
-}
+#include "ising.h"
 
 ising_class::ising_class()
 {
@@ -193,7 +75,7 @@ void ising_class::wolff(double sweeps)
 			row = cluster[(i%MAX_CLUSTER)]/WIDTH;
 			col = cluster[(i%MAX_CLUSTER)] - row*WIDTH;
 
-//cout << row << " " << col << endl;
+//std::cout << row << " " << col << std::endl;
 
 			for (j=0;j<4;j++)
 			{
@@ -229,7 +111,7 @@ void ising_class::wolff(double sweeps)
 				}
 
 				if (nc - i > MAX_CLUSTER) {
-					cout << "Cluster got too big" << endl;
+					std::cout << "Cluster got too big" << std::endl;
 					exit(1);
 				}
 
@@ -293,7 +175,7 @@ void ising_class::wolff(double sweeps)
 			i++;
 
 			if (nc - i > MAX_CLUSTER) {
-				cout << "Cluster got too big" << endl;
+				std::cout << "Cluster got too big" << std::endl;
 				exit(1);
 			}
 
@@ -325,7 +207,7 @@ void ising_class::load_config(const char * filename)
 	if (lattice.good())
 		lattice.read((char *) spin,N/8);
 	else
-		cout << "Input file not found, starting with M=-N" << endl;
+		std::cout << "Input file not found, starting with M=-N" << std::endl;
 	lattice.close();
 
 	magnetisation();
@@ -387,7 +269,7 @@ void ising_class::draw_lattice(long Wframes, long block_length)
 		filename << block_length << ".png";
 		pngwriter png(Wrn,Wrn,0.0,filename.str().c_str());
 
-cout << filename.str().c_str() << endl;
+std::cout << filename.str().c_str() << std::endl;
 		for (col=0;col<Wrn;col++)
 		{
 		    for (row=0;row<Wrn;row++)
@@ -525,7 +407,7 @@ void ising_class::clusters()
 				}
 
 				if (nc - i > MAX_CLUSTER) {
-					cout << "Cluster got too big" << endl;
+					std::cout << "Cluster got too big" << std::endl;
 					exit(1);
 				}
 			}
@@ -534,7 +416,7 @@ void ising_class::clusters()
 
 		}
 
-		datafile << nc << endl;
+		datafile << nc << std::endl;
 	}
 	}
 
@@ -568,7 +450,7 @@ void ising_class::draw_xy_L(long x, long y, long Wrn, double Lfac, int findex)
 	Nrn = Wrn * Wrn;
 	Nblock = block_length * block_length;
 
-	cout << "Wrn=" << Wrn << ", block_length=" << block_length << endl;
+	std::cout << "Wrn=" << Wrn << ", block_length=" << block_length << std::endl;
 
 	if ((x + Wrn*block_length <= WIDTH) && (y + Wrn*block_length <= WIDTH))
 	{
@@ -577,7 +459,7 @@ void ising_class::draw_xy_L(long x, long y, long Wrn, double Lfac, int findex)
 
 		sprintf(filename, "swolff%4.4d.png", findex);
 
-		cout << filename << endl;
+		std::cout << filename << std::cout;
 		for (col=0;col<Wrn;col++)
 		{
 			for (row=0;row<Wrn;row++)
@@ -614,10 +496,9 @@ void ising_class::draw_xy_L(long x, long y, long Wrn, double Lfac, int findex)
 	}
 	else
 	{
-		cout << "Haven't built PBC into this yet, choose different x,y" << endl;
-		cout << "x=" << x << " y=" << y << " block_length=" << block_length << " Wrn=" << Wrn << endl;
+		std::cout << "Haven't built PBC into this yet, choose different x,y" << std::cout;
+		std::cout << "x=" << x << " y=" << y << " block_length=" << block_length << " Wrn=" << Wrn << std::cout;
 	}
 
 }
-
-#endif
+#endif 

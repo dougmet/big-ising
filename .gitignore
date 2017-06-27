@@ -7,5 +7,6 @@ isingmov.exe
 lattice.pos
 data
 swolff*.png
+metadata.yaml
 *.o
 

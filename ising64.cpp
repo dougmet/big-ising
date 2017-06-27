@@ -88,6 +88,7 @@ int main(int argc, char *argv[])
 	ising_class ising;
 	ofstream clearfile, datafile;
 
+cout << COMMIT << endl;
 
 	cout << "Everyone's alive" << endl;
 

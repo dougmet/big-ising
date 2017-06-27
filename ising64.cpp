@@ -123,13 +123,14 @@ int main(int argc, char *argv[])
 #endif
 		datafile << ising.mag << " " << ising.energy() << endl;
 
+/*
 		if ((fabs(ising.mag)/((double) N) < 0.03) && (i>50))
 		{
 			ising.save_config("lattice.pos");
 			cout << "Close to zero magnetisation. Stopping." << endl;
 			exit(0);
 		}
-
+*/
 		if (i%20==0)
 			ising.save_config("lattice.pos");
 

@@ -6,5 +6,6 @@ isingpng.exe
 isingmov.exe
 lattice.pos
 data
+swolff*.png
 *.o
 

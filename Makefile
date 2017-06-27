@@ -11,13 +11,13 @@ all: ising isingpng isingmov
 git:
 	echo commit is $(COMMIT), branch is $(BRANCH)
 
-ising:
+ising: $(SOURCES) ising64.cpp
 	$(CC) $(SOURCES) ising64.cpp $(CFLAGS) $(LDFLAGS) -o ising
 
-isingpng:
+isingpng: $(SOURCES) ising-png.cpp
 	$(CC) $(SOURCES) ising-png.cpp $(CFLAGS) $(LDFLAGS) -o isingpng
 
-isingmov:
+isingmov: $(SOURCES) mov_huge_ising.cpp
 	$(CC) $(SOURCES) mov_huge_ising.cpp $(CFLAGS) $(LDFLAGS) -o isingmov
 
 clean:

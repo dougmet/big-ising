@@ -98,8 +98,8 @@ int main(int argc, char *argv[])
     ising.mt.seed(seed);
 
 	metadatafile.open("metadata.yaml");
-	metadatafile << "\"N\": " << N << endl << 
-	"T: " << T  << endl <<
+	metadatafile << "\"N\": " << N << endl << // N is false in yaml...
+	"\"T\": " << T  << endl <<
 	"Commit: " << COMMIT << endl << 
 	"Branch: " << BRANCH << endl <<
 	"Seed: " << seed << endl;

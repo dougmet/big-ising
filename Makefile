@@ -2,9 +2,11 @@
 COMMIT := $(shell git rev-parse HEAD)
 BRANCH := $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
 CC=g++
-CFLAGS=-Wall -DPNG_DUMP -DCOMMIT=\"$(COMMIT)\" -DBRANCH=\"$(BRANCH)\"
+CFLAGS=-Wall -DCOMMIT=\"$(COMMIT)\" -DBRANCH=\"$(BRANCH)\"
 LDFLAGS=
 SOURCES=lodepng.cpp
+
+# -DPNG_DUMP
 
 all: ising isingpng isingmov
 

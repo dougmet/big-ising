@@ -86,17 +86,26 @@ int main(int argc, char *argv[])
 	int i, iframe=0;
 	bool x;
 	ising_class ising;
-	ofstream clearfile, datafile;
-
-cout << COMMIT << endl;
+	ofstream metadatafile, datafile;
 
 	cout << "Everyone's alive" << endl;
 
-	clearfile.open("data");
-	clearfile << "N " << N << " T " << T  << endl;
-	clearfile.close();
+#ifdef SEED
+    unsigned int seed = SEED;
+#else
+    unsigned int seed = ising.mt.randInt();
+#endif
+    ising.mt.seed(seed);
 
-	//ising.mt.seed(10);
+	metadatafile.open("metadata.yaml");
+	metadatafile << "\"N\": " << N << endl << 
+	"T: " << T  << endl <<
+	"Commit: " << COMMIT << endl << 
+	"Branch: " << BRANCH << endl <<
+	"Seed: " << seed << endl;
+	metadatafile.close();
+
+
 //	ising.wolff(25);
 
 	cout << "Loading..." << flush;

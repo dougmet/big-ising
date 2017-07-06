@@ -37,7 +37,7 @@ using namespace std;
 #include "lodepng.h"
 #endif
 
-#define WIDTH 2048 // Giant 131072 // Large 32768 // Med 4096 // Sm 1024
+#define WIDTH 4096 // Giant 131072 // Large 32768 // Med 4096 // Sm 1024
 #define N (WIDTH*WIDTH) // Giant 17179869184 // Large 1073741824 // Med 16777216 // Sm 1048576
 #define MAX_CLUSTER (64*WIDTH) // Giant 8388608 // Large 2097152 // Med 262144 // Sm 65536
 //#define T 2.28

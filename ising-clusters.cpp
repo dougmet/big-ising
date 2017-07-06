@@ -86,10 +86,6 @@ class ising_class
 
 int main(int argc, char *argv[])
 {
-	int i;
-#ifdef PNG_DUMP
-	int iframe=0;
-#endif
 	ising_class ising;
 	ofstream metadatafile, datafile;
 
@@ -529,7 +525,7 @@ void ising_class::draw_xy_L(long x, long y, long Wrn, double Lfac, int findex)
 	// In this one we input L as a fraction of total length, from here we make our best guess for the
 	// block size (rounding down where necessary).
 
-	long i, j, k, Nrn, row, col;
+	long Nrn, row, col;
 	long kb, jb;
 	long corner, bigcorner, Nblock;
 	double av_spin, steep;

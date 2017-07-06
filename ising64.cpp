@@ -83,26 +83,39 @@ class ising_class
 
 int main(int argc, char *argv[])
 {
-	int i, iframe=0;
-	bool x;
+	int i;
+#ifdef PNG_DUMP
+	int iframe=0;
+#endif
 	ising_class ising;
-	ofstream clearfile, datafile;
-
+	ofstream metadatafile, datafile;
 
 	cout << "Everyone's alive" << endl;
 
-	clearfile.open("data");
-	clearfile << "N " << N << " T " << T  << endl;
-	clearfile.close();
+#ifdef SEED
+    unsigned int seed = SEED;
+#else
+    unsigned int seed = ising.mt.randInt();
+#endif
+    ising.mt.seed(seed);
 
-	//ising.mt.seed(10);
+	metadatafile.open("metadata.yaml");
+	metadatafile << "\"N\": " << N << endl << // N is false in yaml...
+	"\"T\": " << T  << endl <<
+	"Commit: " << COMMIT << endl << 
+	"Branch: " << BRANCH << endl <<
+	"Seed: " << seed << endl;
+	metadatafile.close();
+
+
 //	ising.wolff(25);
 
 	cout << "Loading..." << flush;
 	ising.load_config("lattice.pos");
 	cout << " Done." << endl;
 
-	datafile.open("data",fstream::app | fstream::ate);
+	datafile.open("em.csv",fstream::app | fstream::ate);
+
 	i=0;
 	while (i>-1)// || fabs(ising.mag)/((double) N) > 0.1)
 	{
@@ -111,19 +124,24 @@ int main(int argc, char *argv[])
 #ifdef PNG_DUMP
 		ising.draw_xy_L(0,0, 720, 1.0, iframe++);
 #endif
-		datafile << ising.mag << " " << ising.energy() << endl;
+		datafile << ising.mag << ", " << ising.energy() << endl;
 
+/*
 		if ((fabs(ising.mag)/((double) N) < 0.03) && (i>50))
 		{
 			ising.save_config("lattice.pos");
 			cout << "Close to zero magnetisation. Stopping." << endl;
 			exit(0);
 		}
-
-		if (i%20==0)
+*/
+		if (i%20==0) 
+		{
 			ising.save_config("lattice.pos");
+			//ising.clusters();
+		}
 
 		i++;
+
 	}
 	datafile.close();
 
@@ -317,8 +335,6 @@ void ising_class::save_config(const char * filename)
 
 void ising_class::load_config(const char * filename)
 {
-	int64_t i;
-
 	ifstream lattice;
 
 	lattice.open(filename,ifstream::binary);
@@ -470,12 +486,12 @@ inline void ising_class::flipincluster(int64_t index)
 
 void ising_class::clusters()
 {
-	int64_t i,j,x,modi,current, nc, row, col;
+	int64_t i,j,x,current, nc, row, col;
 	bool spin0;
 	ofstream datafile;
 //cprob=1.0;
 
-	datafile.open("clusters.dat");
+	datafile.open("clusters.csv",fstream::app | fstream::ate);
 
 	for (x=0; x<N; x++)
 	{

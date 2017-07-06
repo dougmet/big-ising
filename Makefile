@@ -1,18 +1,25 @@
 
+COMMIT := $(shell git rev-parse HEAD)
+BRANCH := $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
 CC=g++
-CFLAGS=-Wall -DPNG_DUMP
+CFLAGS=-O3 -Wall -DCOMMIT=\"$(COMMIT)\" -DBRANCH=\"$(BRANCH)\"
 LDFLAGS=
 SOURCES=lodepng.cpp
 
+# -DPNG_DUMP
+
 all: ising isingpng isingmov
 
-ising:
+git:
+	echo commit is $(COMMIT), branch is $(BRANCH)
+
+ising: $(SOURCES) ising64.cpp
 	$(CC) $(SOURCES) ising64.cpp $(CFLAGS) $(LDFLAGS) -o ising
 
-isingpng:
+isingpng: $(SOURCES) ising-png.cpp
 	$(CC) $(SOURCES) ising-png.cpp $(CFLAGS) $(LDFLAGS) -o isingpng
 
-isingmov:
+isingmov: $(SOURCES) mov_huge_ising.cpp
 	$(CC) $(SOURCES) mov_huge_ising.cpp $(CFLAGS) $(LDFLAGS) -o isingmov
 
 clean:

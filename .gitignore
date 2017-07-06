@@ -5,7 +5,7 @@ ising.exe
 isingpng.exe
 isingmov.exe
 lattice.pos
-data
+em.csv
 swolff*.png
 metadata.yaml
 *.o

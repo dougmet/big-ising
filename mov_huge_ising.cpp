@@ -106,7 +106,7 @@ public:
 
 int main(int argc, char *argv[])
 {
-	int i, ix, iy;
+	int ix, iy;
 	box_class *box;
 	ising_class *ising;
 
@@ -199,11 +199,11 @@ void box_class::start_job()
 	// Here I'll control the whole job.
 
 
-	int x,y,ci,i,j;
+	int x,y,ci;
 	int current;
 	int c0x,c0y, Lcell;
 	// Apply some contrast
-	double xp,yp, op, a;
+	double xp,yp, op;
 	int radius;
 	int row, col;
 
@@ -310,7 +310,6 @@ void box_class::start_job()
 box_class::box_class()
 {
 	int i;
-	int Nper_slab;
 
 	// We have no particles at the start
 	Np=0;
@@ -371,7 +370,7 @@ void box_class::add_particle(int in_particle, int ic)
 
 int box_class::assign_cell(int inpart)
 {
-	int x,y,z,ci;
+	int x,y,ci;
 
 
 	//which cell?
@@ -434,7 +433,7 @@ void ising_class::draw_xy_L(long x, long y, long Wrn, double Lfac, int findex)
 	// In this one we input L as a fraction of total length, from here we make our best guess for the
 	// block size (rounding down where necessary).
 
-	long i, j, k, Nrn, row, col;
+	long Nrn, row, col;
 	long kb, jb;
 	long corner, bigcorner, Nblock;
 	double av_spin, steep;

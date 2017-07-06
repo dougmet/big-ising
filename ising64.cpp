@@ -83,8 +83,10 @@ class ising_class
 
 int main(int argc, char *argv[])
 {
-	int i, iframe=0;
-	bool x;
+	int i;
+#ifdef PNG_DUMP
+	int iframe=0;
+#endif
 	ising_class ising;
 	ofstream metadatafile, datafile;
 
@@ -328,8 +330,6 @@ void ising_class::save_config(const char * filename)
 
 void ising_class::load_config(const char * filename)
 {
-	int64_t i;
-
 	ifstream lattice;
 
 	lattice.open(filename,ifstream::binary);
@@ -481,7 +481,7 @@ inline void ising_class::flipincluster(int64_t index)
 
 void ising_class::clusters()
 {
-	int64_t i,j,x,modi,current, nc, row, col;
+	int64_t i,j,x,current, nc, row, col;
 	bool spin0;
 	ofstream datafile;
 //cprob=1.0;

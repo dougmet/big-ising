@@ -115,6 +115,7 @@ int main(int argc, char *argv[])
 	cout << " Done." << endl;
 
 	datafile.open("em.csv",fstream::app | fstream::ate);
+
 	i=0;
 	while (i>-1)// || fabs(ising.mag)/((double) N) > 0.1)
 	{
@@ -133,10 +134,14 @@ int main(int argc, char *argv[])
 			exit(0);
 		}
 */
-		if (i%20==0)
+		if (i%20==0) 
+		{
 			ising.save_config("lattice.pos");
+			//ising.clusters();
+		}
 
 		i++;
+
 	}
 	datafile.close();
 
@@ -486,7 +491,7 @@ void ising_class::clusters()
 	ofstream datafile;
 //cprob=1.0;
 
-	datafile.open("clusters.dat");
+	datafile.open("clusters.csv",fstream::app | fstream::ate);
 
 	for (x=0; x<N; x++)
 	{

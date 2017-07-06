@@ -22,5 +22,8 @@ isingpng: $(SOURCES) ising-png.cpp
 isingmov: $(SOURCES) mov_huge_ising.cpp
 	$(CC) $(SOURCES) mov_huge_ising.cpp $(CFLAGS) $(LDFLAGS) -o isingmov
 
+isingclusters: $(SOURCES) ising-clusters.cpp
+	$(CC) $(SOURCES) ising-clusters.cpp -DPNG_DUMP $(CFLAGS) $(LDFLAGS) -o isingclusters
+
 clean:
 	rm ising isingpng isingmov

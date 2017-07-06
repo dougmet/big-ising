@@ -2,7 +2,7 @@
 COMMIT := $(shell git rev-parse HEAD)
 BRANCH := $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
 CC=g++
-CFLAGS=-Wall -DCOMMIT=\"$(COMMIT)\" -DBRANCH=\"$(BRANCH)\"
+CFLAGS=-O3 -Wall -DCOMMIT=\"$(COMMIT)\" -DBRANCH=\"$(BRANCH)\"
 LDFLAGS=
 SOURCES=lodepng.cpp
 

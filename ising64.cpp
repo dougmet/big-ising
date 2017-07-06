@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
 	ising.load_config("lattice.pos");
 	cout << " Done." << endl;
 
-	datafile.open("data",fstream::app | fstream::ate);
+	datafile.open("em.csv",fstream::app | fstream::ate);
 	i=0;
 	while (i>-1)// || fabs(ising.mag)/((double) N) > 0.1)
 	{
@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
 #ifdef PNG_DUMP
 		ising.draw_xy_L(0,0, 720, 1.0, iframe++);
 #endif
-		datafile << ising.mag << " " << ising.energy() << endl;
+		datafile << ising.mag << ", " << ising.energy() << endl;
 
 /*
 		if ((fabs(ising.mag)/((double) N) < 0.03) && (i>50))

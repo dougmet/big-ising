@@ -11,6 +11,8 @@ It is mostly a standard Wolff algorithm, but it does two clever things:
 
 There are no big dependencies for this code. It's been tested on Mac with clang, Linux with gcc and Windows using MingGW-W64. You can get the Windows tool chain from [https://mingw-w64.org/](https://mingw-w64.org/). If you have the [Rtools](https://cran.r-project.org/bin/windows/Rtools/) tools set then it comes bundled with that. I used rtools34.exe.
 
+I can't get the really really big models to work on Windows, only had success on Linux.
+
 ## Running
 
 There are no input files. All variables are compiled in as `#define`s. If the `lattice.pos` file is present in the working directory then this will be loaded in and the simulation resumed from this point.
